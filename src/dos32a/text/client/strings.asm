@@ -250,7 +250,10 @@ prints:
 	xor	cx,cx
 	call	@@dec
 	jmp	@@loop
-@@hex:	rol	ax,4
+@@hex:	rol	ax,1
+	rol	ax,1
+	rol	ax,1
+	rol	ax,1
 	mov	bl,al
 	and	bl,0Fh
 	add	bl,30h
