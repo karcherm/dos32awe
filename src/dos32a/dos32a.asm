@@ -425,7 +425,7 @@ remove_kernel:
 	push	es
 	mov	es,_seg_kernel
 	mov	si,offs @text16_beg
-	mov	cx,(offs @text16_end - @text16_beg) / 2
+	mov	cx,(offs @text16_end - offs @text16_beg) / 2
 	rep	movsw
 	pop	es
 	mov	ax,dx
