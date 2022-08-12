@@ -787,9 +787,17 @@ vxr_init:				; VCPI/XMS/raw common init tail
 	db 0Fh, 0A2h			; CPUID
 	test	edx,01000000h		; test if FXSAVE/FXRSTOR available (FXSR bit)
 	jz	@@0			; if not, jump
+IF ??version GE 400h
 	mov	eax,cr4			; load CR4 into EAX
+ELSE
+	db	0Fh, 20h, 0E0h
+ENDIF
 	or	ax,0200h		; set OSFXFR bit
+IF ??version GE 400h
 	mov	cr4,eax			; reload CR4 (note: OSXMMEXCPT is left unchanged)
+ELSE
+	db	0Fh, 22h, 0E0h
+ENDIF
 	mov	eax,cr0			; load CR0 in EAX
 	and	al,0F9h			; clear EM & MP bits
 	mov	cr0,eax			; reload CR0
