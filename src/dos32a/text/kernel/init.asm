@@ -64,6 +64,24 @@
 ;=============================================================================
 
 pm32_init:
+; Remove check for ISA-generated NMI from AWEUTIL
+; If we reflect the NMI from protected mode, the flag is already cleared
+	push	ax bx ds
+	xor	ax, ax
+	mov	ds, ax
+	mov	ax, ds:0Ah
+	mov	bx, ds:08h
+	add	bx, 9
+	mov	ds, ax			; DS:BX = NMI_entry + 9
+	cmp	dptr [bx], 040A861E4h	; in al, 61h; test al, 40h
+	jne	@@0
+	cmp	bptr [bx+4], 74h        ; jz @@not_for_us
+	jne	@@0
+	mov	dptr [bx], 90909090h
+	mov	wptr [bx+4], 9090h
+@@0:
+	pop	ds bx ax
+
 	cld
 	pushad
 	push	ds
