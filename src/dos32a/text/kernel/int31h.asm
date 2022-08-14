@@ -1412,6 +1412,7 @@ int31h_0500:
 int31h_0501:
 	call	int31_checkifmemavail
 	call	int31_testbxcxtoebx		; convert BX:CX to EBX
+	add	ebx,1000h			; extra 4KB to work around bugs in clients
 	call	int31_checkblocks
 	mov	esi,cs:mem_ptr			; get pointer to memory
 @@1:	mov	eax,[esi+04h]			; get block size
@@ -1447,6 +1448,7 @@ int31h_0503:
 	mov	si,di
 	call	int31_checkifmemavail
 	call	int31_testbxcxtoebx		; convert BX:CX to EBX
+	add	ebx,1000h			; extra 4KB to work around bugs in clients
 	call	int31_checkblocks
 	call	int31_checkhandle
 
