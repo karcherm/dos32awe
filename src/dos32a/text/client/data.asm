@@ -79,7 +79,7 @@ g_errtab	db	00h,	0
 h_errtab	dw	errmsg1, errmsg2, errmsg3
 
 errtab_00xx	dw	d_err0,	d_err1,	d_err2,	d_err3, d_err4
-		dw	d_err5,	d_err6,	d_err7
+		dw	d_err5,	d_err6,	d_err7, d_err8
 errtab_10xx	dw	n_msg,	m_err1,	m_err2
 errtab_20xx	dw	e_err0,	e_err1,	e_err2
 errtab_30xx	dw	n_msg,	a_err1, a_err2, a_err3,	a_err4, a_err2, a_err4
@@ -271,6 +271,7 @@ d_err4	db 'incompatible VCPI PIC mappings'				,0
 d_err5	db 'could not enter 32bit protected mode'			,0
 d_err6	db 'could not allocate system selectors'			,0
 d_err7	db 'could not enable A20 line'					,0
+d_err8  db 'Please run DOS32AWE under Real Mode DOS only (remove EMM)'	,0
 
 
 ; MEMORY errors		10xx

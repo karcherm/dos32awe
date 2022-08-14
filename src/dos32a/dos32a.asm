@@ -186,6 +186,14 @@ start:	push	cs			; DS = CS
 	int	21h
 	jc	@@err2
 	call	far ptr pm32_info	; prepare and check for errors
+	pushf
+	cmp	ch,1
+	jle	@@modeok		; plain or XMS
+	mov	ax,8			; DOS32AWE doesn't support VCPI/DPMI
+	popf
+	jmp	report_error
+@@modeok:
+	popf
 	jnc	@@2			; if error had occured, AX=error code
 	jmp	report_error		; exit with error message
 ;
