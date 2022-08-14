@@ -225,21 +225,24 @@ _app_buf_allocbase	equ @area2_dd+APP_MAXOBJECTS*2	;dd APP_MAXOBJECTS*2 dup(00h)
 
 ;-----------------------------------------------------------------------------
 n_msg	db 0
-cpr_msg	db 'DOS/32A -- DOS Extender '
+cpr_msg	db 'DOS32AWE -- DOS Extender '
 If EXEC_TYPE eq 2
 	db 'BETA '
 EndIf
 	db 'version '
 ver_msg	db 'x.x.x',cr
 	db 'Copyright (C) 1996-2006 by Narech K.',cr
+	db cr
+	db 'AWEUTIL support V1.9 by George L', cr
+	db cr
 cpr_end	label byte
 
-errmsg1	db 'DOS/32A fatal (%w): ',0
-errmsg2	db 'DOS/32A warning (%w): ',0
-errmsg3	db 'DOS/32A run-time (%w): ',0
+errmsg1	db 'DOS32AWE fatal (%w): ',0
+errmsg2	db 'DOS32AWE warning (%w): ',0
+errmsg3	db 'DOS32AWE run-time (%w): ',0
 
 ;-----------------------------------------------------------------------------
-dos_str	db 'DOS32A='
+dos_str	db 'DOS32AWE='
 df1_str	db 'QUIET'		; print =OFF, sound =OFF		--
 df2_str	db 'PRINT'		; print (off=only errors reported)	on/off
 df3_str	db 'SOUND'		; sound on error			on/off
@@ -304,7 +307,7 @@ l_err7	db 'not enough DOS Transfer Buffer space to load LC-exec "%s"'	,0
 
 ; MISC. errors		80xx
 ;=============================================================================
-x_err1	db 'syntax is DOS32A <execname.xxx>'				,0
+x_err1	db 'syntax is DOS32AWE <execname.xxx>'				,0
 x_err2	db 'DOS reported an error (#%wh)'				,0
 x_err3	db 'DPMI host reported an error (#%wh)'				,0
 
