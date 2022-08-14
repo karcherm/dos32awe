@@ -177,6 +177,8 @@ rmstackss	equ @area1_dw+244h	;dw 0
 callbackbase	equ @area1_dd+248h	;dd 0; base of real mode callbacks
 callbackseg	equ @area1_dw+24Ch	;dw 0; segment of callbacks
 irqcallbackptr	equ @area1_dw+250h	;dw 0; ptr to IRQ callback ESP buffer
+oldint02h	equ @area1_dd+252h	;dd 0
+newint02h	equ @area1_dd+256h	;dd 0
 
 		evendata
 client_call	dw	0,0		; client's critical handler offset

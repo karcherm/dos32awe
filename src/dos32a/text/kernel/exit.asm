@@ -57,6 +57,8 @@ int21h_pm:
 
 	mov	eax,oldint1Bh		; restore critical INTs
 	mov	es:[4*1Bh],eax
+	mov	eax,oldint02h
+	mov	es:[4*02h],eax
 	mov	eax,oldint1Ch
 	mov	es:[4*1Ch],eax
 	mov	eax,oldint21h

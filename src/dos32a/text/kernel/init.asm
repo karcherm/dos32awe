@@ -818,11 +818,19 @@ ENDIF
 	mov	oldint24h[edi],eax
 	mov	eax,ds:[4*2Fh]		; preserve INT 2Fh - (Multiplex)
 	mov	oldint2Fh[edi],eax
+	mov	eax,ds:[4*02h]		; preserve INT 02h - (NMI)
+	mov	oldint02h[edi],eax
 
 	mov	ax,cs:kernel_code	; install real mode INT 21h handler
 	shl	eax,16
 	mov	ax,offs int21h_rm
 	mov	ds:[4*21h],eax
+
+	mov	ax,cs:kernel_code	; install real mode NMI handler
+	shl	eax,16
+	mov	ax,offs NMI_rm
+	mov	ds:[4*02h],eax
+	mov	newint02h[edi],eax
 
 	cmp	cs:pmodetype,0		; is system raw?
 	jnz	@@1			; if not, we are done
@@ -920,6 +928,8 @@ install_ints:
 	je	@@2			; if yes, store as interrupt gate
 	cmp	bl,dh			; one of the low IRQs?
 	je	@@2			; if yes, store as interrupt gate
+	cmp	cl,02h			; NMI?
+	je	@@2			; if yes, store as interrupt gate
 	mov	ax,8F00h		; set to trap gate type (IF=unchanged)
 @@2:	stos	dptr es:[di]
 	inc	cl			; increment interrupt number
@@ -982,10 +992,10 @@ install_ints:
 	call	setup_irqs
 ;
 ; install INT 2 (special setup to handle co-proc)
-;  modify call target of INT 02h in int_matrix call table such that it points to int_main
+;  modify call target of INT 02h in int_matrix call table such that it points nmi_forward
 ;
-;	mov	ax,(offs int_main) - (offs int_matrix+4) - 02h*4
-;	mov	wptr int_matrix[02h*4+2],ax	; install INT 02h (NMI)
+	mov	ax,(offs nmi_forward) - (offs int_matrix+4) - 02h*4
+	mov	wptr int_matrix[02h*4+2],ax	; install INT 02h (NMI)
 
 ;
 ; install IRQ 7 (special setup to handle supurious signals)

@@ -114,7 +114,57 @@ critical_error_pm:
 	jmp	dptr client_call	; enter client's run-time error handler
 
 
+;=============================================================================
+; NMI forwarding
+; mostly a copy of irq_normal/irq_standard
+;
+nmi_forward:
+	pop	ax			; pop return address
+	pushad
+	push	ds es fs gs
+	mov	ds,cs:seldata
 
+	movzx	eax,al			; copy&paste leftover from irq_normal
+
+	mov	dx,rmstacktop		; DX = SS for real mode redirection
+	mov	bx,rmstacklen		; get size of real mode stack
+	movzx	esi,dx			; ESI -> top of real mode stack
+	sub	dx,bx			; adjust DX to next stack location
+	shl	esi,4
+	cmp	dx,rmstackbase		; exceeded real mode stack space?
+	jb	critical_error_rm	; if yes, critical error
+	mov	rmstacktop,dx		; update ptr for possible reenterancy
+	shl	bx,4			; set real mode SP to top of stack
+
+	mov	edi,newint02h		; get AWEUTIL NMI entry
+	mov	ds,selzero		; DS -> 0 (beginning of memory)
+	mov	ds:[02h*4],edi		; force NMI to point there
+	mov	[esi-2],ss		; store SS: on real mode stack
+	mov	[esi-6],esp		; store ESP on real mode stack
+	mov	dptr [esi-10],_KERNEL	; set target FLAGS and CS on RM stack
+	mov	wptr [esi-12],offs @@0	; set target IP on RM stack
+	shld	esi,edi,16
+	sub	bx,12			; adjust real mode SP for stored vars
+	db 66h				; JMP DWORD PTR, as in 32bit offset,
+	jmp	wptr cs:pmtormswrout	;  not seg:16bit offset
+@@0:	cli
+	mov	ax,SELDATA		; DS selector value for protected mode
+	mov	cx,ax			; ES selector value for protected mode
+	pop	ebx			; get protected mode SS:ESP from stack
+	pop	dx
+	mov	si,SELCODE		; target CS:EIP in protected mode
+	mov	edi,offs @@1
+	jmp	cs:rmtopmswrout		; go back to protected mode
+
+@@1:
+	mov	ax,rmstacklen		; restore top of real mode stack
+	add	rmstacktop,ax
+
+	mov	ds,selzero		; DS -> 0 (beginning of memory)
+	pop	gs fs es ds		; restore all registers
+	popad
+	pop	ax			; restore original AX
+	iretd
 
 
 ;=============================================================================
