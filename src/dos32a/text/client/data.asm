@@ -121,7 +121,7 @@ _mus_size	dd 0
 _mus_backoff	dw 0
 _mus_backseg	dw 0
 _mus_off	dd 0
-_mus_sel	dd 0
+_mus_sel	dw 0,0
 _mus_data	db 0,0
 
 _seg_ds		dw 0		; real mode segment storage
@@ -198,7 +198,7 @@ _int_number		equ @area1_db+50h		;db 0,0
 _int_temp		equ @area1_dw+52h		;dw 0
 _int_errcode		equ @area1_dd+54h		;dd 0
 _int_esp		equ @area1_dd+58h		;dd 0
-_int_ss			equ @area1_dd+5Ch		;dw 0
+_int_ss			equ @area1_dw+5Ch		;dw 0
 _int_erravail		equ @area1_db+5Eh		;db 0
 
 _app_type		equ @area1_db+60h		;db 0
