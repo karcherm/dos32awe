@@ -92,19 +92,19 @@ dw	20h		; Real mode Stack length, (in para)
 dw	20h		; Protected mode Stack length, (in para)
 dd	0FFFFFFFFh	; Max. extended memory to allocate in bytes
 ;-----------------------------------------------------------------------------
-db	00111111b	; DOS/32A misc. bits:
+db	01110111b	; DOS/32A misc. bits:
 			;   bit 0: 0=console output off, 1=on		/1=def
 			;   bit 1: 0=sound generation off, 1=on		/1=def
 			;   bit 2: 0=restore INT table off, 1=on	/1=def
-			;   bit 3: 0=report modified INTs off, 1=on	/1=def
+			;   bit 3: 0=report modified INTs off, 1=on	/0=def
 			;   bit 4: 0=load 16 in lowmem off, 1=on	/1=def
 			;   bit 5: 0=force load 16 low off, 1=on	/1=def
-			;   bit 6: 0=cls on exception off, 1=on		/0=def
+			;   bit 6: 0=cls on exception off, 1=on		/1=def
 			;   bit 7: 0=null-ptr protect off, 1=on		/0=def
 If EXEC_TYPE eq 0
-db	00001001b	; DOS/32A Pro second misc. bits
+db	01001001b	; DOS/32A Pro second misc. bits
 Else
-db	10001001b	; DOS/32A Beta second misc. bits
+db	11001001b	; DOS/32A Beta second misc. bits
 Endif
 			;   bit 0: 0=config by enironment off, 1=on	/1=def
 			;   bit 1: 0=focus on this VM off, 1=on		/0=def
@@ -112,7 +112,7 @@ Endif
 			;   bit 3: 0=show copyright off, 1=on		/1=def
 			;   bit 4: 0=verbose mode off, 1=on		/0=def
 			;   bit 5: reserved				/0=def
-			;   bit 6: 0=lock configuration off, 1=on	/*
+			;   bit 6: 0=lock configuration off, 1=on	/1=def
 			;   bit 7: 0=Professional, 1=Beta		/*
 dw	0200h		; DOS INT 21h buffer in low memory (in para)	/8 KB
 dw	090Ch		; Internal Version of DOS/32A: db low,high
