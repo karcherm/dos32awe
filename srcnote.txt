@@ -1,0 +1,9 @@
+This source code has been reconstructed from DOS32AWE.EXE provided by George L. and the DOS32/A source code.
+To rebuild DOS32AWE, you need Borland's TASM. It is tested with version 3.1 and 4.1.
+The original DOS32AWE.EXE seems to be linked by a Microsoft Linker version newer than 5.31, but that one is close
+enough to provide an executable that only differs in the layout of the EXE file header.
+To obtain a mostly binary identical executable, assemble both dos32a.asm and kernel.asm with -m3 -ml -DEXEC_TYPE=0,
+then link dos32a.obj and kernel.obj (in that order!).
+
+Currently there seem to be no free/open source toolchains available that can generate a binary that is close enough
+to the original DOS32AWE to provide meaningful comparability.
