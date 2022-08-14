@@ -40,8 +40,12 @@
 ; Real mode INT 02h
 ;=============================================================================
 NMI_rm:
+	push	ax
 	pushf
 	call	cs:oldint02h		; forward to AWEUTIL
+	xor	al,al
+	out	70h,al			; renable blocked NMI
+	pop	ax
 	iret
 
 ; Real mode INT 15h
@@ -100,6 +104,8 @@ int21h_rm:
 int21h_exit:
 	cli
 	mov	bp,ax			; preserve AX=exit code
+	mov	al,80h			; block NMI during shutdown process
+	out	70h,al
 	mov	ax,SELDATA		; DS selector for protected mode
 	mov	cx,ax
 	mov	dx,SELZERO		; SS selector = zero selector
@@ -228,6 +234,8 @@ intold_restore:
 enable_A20:				; hardware enable gate A20
 	pushf
 	cli
+	mov	al,80h			; block NMI during A20 switch
+	out	70h,al
 	call	enablea20test		; is A20 already enabled?
 	setz	al			; AL = 00h (OFF),  AL = 01h (ON)
 	mov	A20_state,al

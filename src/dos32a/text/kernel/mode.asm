@@ -54,10 +54,12 @@
 	Align 4
 v_rmtopmsw:
 	pushf				; store FLAGS
-	cli
 	mov	ds,cs:kernel_code	; DS = _KERNEL
 	pop	tempw0			; move FLAGS from stack to temp
 	mov	tempw1,ax		; store AX (protected mode DS)
+	mov	al,80h
+	out	70h,al			; block NMI during mode switch
+	cli
 	mov	tempw2,si		; store SI (protected mode CS)
 	mov	esi,vcpistrucaddx	; ESI = linear addx of VCPI structure
 	mov	ax,0DE0Ch		; VCPI switch to protected mode
@@ -76,6 +78,8 @@ v_rmtopmswpm:
 	mov	[esp],ax
 	push	cs:tempd1		; store protected mode target CS
 	push	edi			; store protected mode target EIP
+	xor	al,al
+	out	70h,al			; unblock NMI after switch is complete
 	iretd				; go to targed addx in protected mode
 
 ;=============================================================================
@@ -93,6 +97,8 @@ v_pmtormsw:
 	pushf				; store FLAGS
 	cli
 	push	ax			; store AX (real mode DS)
+	mov	al,80h
+	out	70h,al			; block NMI during mode switch
 	mov	ds,cs:selzero		; DS -> 0 (beginning of memory)
 	movzx	ebx,bx			; clear high word of EBX, real mode SP
 	mov	eax,cs:vcpiswitchstack	; EAX -> top of temporary switch stack
@@ -115,6 +121,9 @@ v_pmtormsw:
 @@0:	push	bx			; store old FLAGS
 	push	si 			; store target CS in real mode
 	push	di 			; store target IP in real mode
+; DISABLED for unknown reason
+;	xor	al,al
+;	out	70h,al			; unblock NMI after switch is complete
 	iret				; go to target addx in real mode
 
 
@@ -133,6 +142,8 @@ xr_rmtopmsw:
 	pushfd				; store EFLAGS
 	cli
 	push	ax			; store AX (protected mode DS)
+	mov	al,80h
+	out	70h,al			; block NMI during mode switch
 	lidt	fptr cs:idtlimit	; load protected mode IDT
 	lgdt	fptr cs:gdtlimit	; load protected mode GDT
 	mov	eax,cr0			; switch to protected mode
@@ -154,6 +165,8 @@ xr_rmtopmsw:
 	push	eax			; store old EFLAGS
 	push	esi			; store protected mode target CS
 	push	edi			; store protected mode target EIP
+	xor	al,al
+	out	70h,al			; unblock NMI after switch is complete
 	iretd				; go to target addx in protected mode
 
 ;=============================================================================
@@ -171,6 +184,8 @@ xr_pmtormsw:
 	pushf				; store FLAGS
 	cli
 	push	ax			; store AX (real mode DS)
+	mov	al,80h
+	out	70h,al			; block NMI during mode switch
 	mov	ds,cs:seldata		; DS -> 0 (beginning of memory)
 	pop	tempw0			; move real mode DS from stack to temp
 	pop	tempw1			; move FLAGS from stack to temp
@@ -196,6 +211,7 @@ xr_pmtormsw:
 	push	cs:tempw1		; store old FLAGS
 	push	si			; store real mode target CS
 	push	di			; store real mode target IP
+	out	70h,al			; unblock NMI after switch is complete
 	iret				; go to target addx in real mode
 
 
